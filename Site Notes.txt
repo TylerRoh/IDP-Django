@@ -1,0 +1,54 @@
+This page is for notes related to the project
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+***************PostgreSQL****************************************
+
+1/30/20
+Plan for new database setup:
+
+Player:
+player_id
+f_name
+l_name
+
+Team:
+team_id
+name
+
+Stats:
+player_id
+team_id
+year
+stat categories
+
+maybe
+Team_list:
+team_id
+player_id
+
+##this one will just show what players are on what team##
+
+##Would also like to to game by game for each player this setup would make it easier to implement##
+
+
+
+
+
+
