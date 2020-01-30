@@ -1,0 +1,54 @@
+div.topnav{
+    overflow: hidden;
+    background-color: #333;
+    font-family: Arial;
+}
+
+div.topnav a {
+    float: left;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+div.players {
+    width: 300px;
+    background-color: rgb(122, 118, 108);
+    padding: 20px;
+    width: 150px;
+}
+
+div.table {
+    width: 1000px;
+    background-color: rgb(122, 118, 108);
+    padding: 20px;
+}
+
+div.search{
+    background-color: rgb(122, 118, 108);
+    padding: 20px;
+    width: 150px;
+}
+
+
+form.search {
+    float: right;
+}
+
+
+
+
+table {
+    border-collapse: collapse;
+}
+table, th, td {
+  border: 2px solid black;
+}
+
+h1 {
+    color: red;
+}
+td.top_10 {
+    boarder: none;
+}

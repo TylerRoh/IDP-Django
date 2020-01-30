@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+  </head>
+  <div class="topnav">
+      <a href="/defense/">Home</a>
+  </div>
+    <body>
+        <form class="search" type="get" action="." style="margin: 0">
+            <input  id="search_box" type="text" name="search"  placeholder="Search..." >
+            <button id="search_submit" type="submit" >Submit</button>
+        </form>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+
+        <div class="players">
+          <table>
+            {% for a in tuples %}
+              <tr>
+                <td class="top_10"><a href="/defense/player/{{ a.0 }}/">{{ a.1 }}, {{ a.2 }}</a></td>
+                <td>{{ a.3 }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <div class="search">
+          {% for player in players %}
+            <ul><a href="/defense/player/{{ player.player_id }}">{{ player.player_lname }}, {{ player.player_fname }}</a></ul>
+          {% endfor %}
+        </div>
+
+        <div>
+            <h3>Enter scoring settings below:</h3>
+            <form action="/defense/custom/" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+
+        <span>{{ solo }}</span>
+
+    </body>
+</html>
