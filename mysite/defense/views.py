@@ -59,7 +59,9 @@ def player_indv(request, player_id):
     player_info = get_object_or_404(Players, pk=player_id)
     team_info = get_list_or_404(TeamInfo.objects.order_by('-year'), player_id=player_id)
 
+    #this pulls all of the stats on file for the current player id
     qs = TeamInfo.objects.filter(player_id=player_id)
+    #this gets the values in a format for a pandas dataframe
     q = qs.values()
 
     #the below DataFrame we can use to generate whatever tables we want,
@@ -72,9 +74,11 @@ def player_indv(request, player_id):
     fig = go.Figure()
     #if this is a post request the data must be processed
     if request.method == 'POST':
+        #this takes in all of the checked boxes for the graph
         form = Customized_Tables(request.POST)
-
+        #this list will be populated with the categories the user wants plotted
         stat_list = []
+        #if the submission is valit the stat_list will populate with the category of each checked box
         if form.is_valid():
             cd = form.cleaned_data
             if cd.get('games'):
@@ -100,6 +104,7 @@ def player_indv(request, player_id):
             if cd.get('fumble_recovery'):
                 stat_list.append('fr')
 
+        #this plots all of the categories the user checked
         for i in stat_list:
             fig.add_trace(go.Scatter(x=df['year'],y=df[i],name=i))
 
@@ -153,8 +158,8 @@ def test(request):
             default_scoring['interceptions'] = cd.get('interceptions')
             default_scoring['ffb'] = cd.get('ffb')
 
-
-        #if a get or other method for will be blank
+    #the else occurs only before the submit button is clicked, so essentially when the player page is first loaded
+    #the graph will be populated with every data point, might decide to change it to blank for initial load later.
     else:
         form = TestForm()
 
@@ -193,8 +198,6 @@ def test(request):
         tuples = [tuple(x) for x in final_df.to_numpy()]
         #the above is probably sloppy as hell but it works
         context = {'search_term': search_term, 'tuples':tuples,}
-
-    #action = ""
 
     #this appends the context dictionary with the form object
     context['form'] = form
