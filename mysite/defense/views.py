@@ -5,11 +5,9 @@ import pandas as pd
 
 from plotly.offline import plot
 import plotly.graph_objs as go
-from .forms import TestForm
-from django.db.models import Sum
 
 from .models import Players, TeamInfo
-from .forms import TestForm
+from .forms import TestForm, Customized_Tables
 
 def index(request):
     #it works! it runs two querys and if a search term matches a first or a last name then it will return it.
@@ -34,19 +32,19 @@ def index(request):
         #this sorts by fantasy point totals
         df = df.sort_values(['year','fp'], ascending=[False, False])
         #sort out the top 10
-        top_10 = df[0:10]
+        df = df[0:10]
         #list for the top ten scorers ids
-        ids = top_10['player_id_id'].values.tolist()
+        ids = df['player_id_id'].values.tolist()
         #gets the name information for the players
         players = Players.objects.filter(pk__in=ids)
         #now to get the fantasy point totals and the players id for a join
-        fp = top_10[['fp', 'player_id_id']]
+        df = df[['fp', 'player_id_id']]
         #getting the name values of the players
         final_names = players.values()
         #making a dataframe of the name info
         final_df = pd.DataFrame.from_records(final_names)
         #joins our table that is keeping track of points and the one with the players name info
-        final_df = pd.merge(final_df, fp, left_on='player_id', right_on='player_id_id')
+        final_df = pd.merge(final_df, df, left_on='player_id', right_on='player_id_id')
         #sorts out the top 10 displayed
         final_df = final_df.sort_values(['fp'], ascending=False)
         #creating tuples to plug into the template
@@ -101,7 +99,7 @@ def test(request):
     if request.method == 'POST':
         #this will create instance of our form class and populate it with the data from the user input
         form = TestForm(request.POST)
-        #check if it is a valid entry
+        #check if it is a valid entry, if it is then it will update the default scoring dict with custom values
         if form.is_valid():
             cd = form.cleaned_data
             default_scoring['solo'] = cd.get('solo_tackles')
@@ -131,19 +129,19 @@ def test(request):
         #this sorts by fantasy point totals
         df = df.sort_values(['year','fp'], ascending=[False, False])
         #sort out the top 10
-        top_10 = df[0:10]
+        df = df[0:10]
         #list for the top ten scorers ids
-        ids = top_10['player_id_id'].values.tolist()
+        ids = df['player_id_id'].values.tolist()
         #gets the name information for the players
         players = Players.objects.filter(pk__in=ids)
         #now to get the fantasy point totals and the players id for a join
-        fp = top_10[['fp', 'player_id_id']]
+        df = df[['fp', 'player_id_id']]
         #getting the name values of the players
         final_names = players.values()
         #making a dataframe of the name info
         final_df = pd.DataFrame.from_records(final_names)
         #joins our table that is keeping track of points and the one with the players name info
-        final_df = pd.merge(final_df, fp, left_on='player_id', right_on='player_id_id')
+        final_df = pd.merge(final_df, df, left_on='player_id', right_on='player_id_id')
         #sorts out the top 10 displayed
         final_df = final_df.sort_values(['fp'], ascending=False)
         #creating tuples to plug into the template
