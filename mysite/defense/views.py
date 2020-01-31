@@ -30,7 +30,7 @@ def index(request):
         #here we have our pandas dataframe
         df = pd.DataFrame.from_records(stats)
         #this puts in our default scoring as a column in the dataframe right now it is just based on solo tackles
-        df["fp"] = df['solo']
+        df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']
         #this sorts by fantasy point totals
         df = df.sort_values(['year','fp'], ascending=[False, False])
         #sort out the top 10
@@ -126,8 +126,8 @@ def test(request):
         stats = raw_stats.values()
         #here we have our pandas dataframe
         df = pd.DataFrame.from_records(stats)
-        #this puts in our default scoring as a column in the dataframe
-        df["fp"] = (df['solo'] * default_scoring['solo']) + (df['assists'] * default_scoring['ast']) + (df['sacks'] * default_scoring['sacks']) + (df['interceptions'] * default_scoring['interceptions']) + (df['ffb'] * default_scoring['ffb'])
+        #this puts in our default scoring as a column in the dataframe right now it is just based on solo tackles
+        df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']
         #this sorts by fantasy point totals
         df = df.sort_values(['year','fp'], ascending=[False, False])
         #sort out the top 10
@@ -136,14 +136,16 @@ def test(request):
         ids = top_10['player_id_id'].values.tolist()
         #gets the name information for the players
         players = Players.objects.filter(pk__in=ids)
-        #now to get the fantasy point totals
-        fp = top_10['fp'].values.tolist()
+        #now to get the fantasy point totals and the players id for a join
+        fp = top_10[['fp', 'player_id_id']]
         #getting the name values of the players
         final_names = players.values()
         #making a dataframe of the name info
         final_df = pd.DataFrame.from_records(final_names)
-        #adding fantasy points to it
-        final_df["fp"] = fp
+        #joins our table that is keeping track of points and the one with the players name info
+        final_df = pd.merge(final_df, fp, left_on='player_id', right_on='player_id_id')
+        #sorts out the top 10 displayed
+        final_df = final_df.sort_values(['fp'], ascending=False)
         #creating tuples to plug into the template
         tuples = [tuple(x) for x in final_df.to_numpy()]
         #the above is probably sloppy as hell but it works
