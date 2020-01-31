@@ -14,7 +14,13 @@
     <h1>{{ player_info }}</h1>
     <div class="table">
         {{ table|safe }}
-
+        <div>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
         {% autoescape off %}
                 {{ plot_div }}
         {% endautoescape %}

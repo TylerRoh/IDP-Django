@@ -69,22 +69,67 @@ def player_indv(request, player_id):
     df_table = df[['year','team','age','position','g','gs','interceptions','int_td','pass_def','ffb','fr','fb_td','sacks','solo','assists','tfl','qb_hits','sfty']]
     table = df_table.sort_values(['year'], ascending=[False]).to_html()
 
-    #this is the initial instance of our graph
     fig = go.Figure()
+    #if this is a post request the data must be processed
+    if request.method == 'POST':
+        form = Customized_Tables(request.POST)
 
-    #this passes in all of the stats from the pandas dataframe we want to graph, the for loop below traces them
-    stat_list = ['g','gs','interceptions','int_td','pass_def','ffb','fr','fb_td','sacks','solo','assists','tfl','qb_hits']
-    for i in stat_list:
-        fig.add_trace(go.Scatter(x=df['year'],y=df[i],name=i))
+        stat_list = []
+        if form.is_valid():
+            cd = form.cleaned_data
+            if cd.get('games'):
+                stat_list.append('g')
+            if cd.get('games_started'):
+                stat_list.append('gs')
+            if cd.get('solo_tackles'):
+                stat_list.append('solo')
+            if cd.get('asst_tackles'):
+                stat_list.append('assists')
+            if cd.get('tackle_for_loss'):
+                stat_list.append('tfl')
+            if cd.get('sacks'):
+                stat_list.append('sacks')
+            if cd.get('qb_hits'):
+                stat_list.append('qb_hits')
+            if cd.get('interceptions'):
+                stat_list.append('interceptions')
+            if cd.get('pass_def'):
+                stat_list.append('pass_def')
+            if cd.get('forced_fumble'):
+                stat_list.append('ffb')
+            if cd.get('fumble_recovery'):
+                stat_list.append('fr')
 
-        #this adds the axis settings we want
-    fig.update_layout(title="Player Stats", xaxis_title="Season", width=850, height=500,
-        xaxis = dict(tickmode = 'linear', dtick = 1), yaxis = dict(tickmode = 'linear', tick0 = 0, dtick = 10))
+        for i in stat_list:
+            fig.add_trace(go.Scatter(x=df['year'],y=df[i],name=i))
 
-    #this set the html, css, and javascript needed for our graph to the variable plot_div, this can be passed to the template
-    plot_div = plot(fig, output_type='div')
+            #this adds the axis settings we want
+        fig.update_layout(title="Player Stats", xaxis_title="Season", width=850, height=500,
+            xaxis = dict(tickmode = 'linear', dtick = 1), yaxis = dict(tickmode = 'linear', tick0 = 0, dtick = 10))
 
-    return render(request, 'defense/detail.html', {'player_info': player_info, 'team_info':team_info, 'table':table, 'plot_div': plot_div})
+        #this set the html, css, and javascript needed for our graph to the variable plot_div, this can be passed to the template
+        plot_div = plot(fig, output_type='div')
+
+    else:
+        form = Customized_Tables()
+        #this is the initial instance of our graph
+
+
+        #this passes in all of the stats from the pandas dataframe we want to graph, the for loop below traces them
+        stat_list = ['g','gs','interceptions','int_td','pass_def','ffb','fr','fb_td','sacks','solo','assists','tfl','qb_hits']
+        for i in stat_list:
+            fig.add_trace(go.Scatter(x=df['year'],y=df[i],name=i))
+
+            #this adds the axis settings we want
+        fig.update_layout(title="Player Stats", xaxis_title="Season", width=850, height=500,
+            xaxis = dict(tickmode = 'linear', dtick = 1), yaxis = dict(tickmode = 'linear', tick0 = 0, dtick = 10))
+
+        #this set the html, css, and javascript needed for our graph to the variable plot_div, this can be passed to the template
+        plot_div = plot(fig, output_type='div')
+
+    context = {'player_info': player_info, 'team_info':team_info, 'table':table, 'plot_div': plot_div, 'form':form}
+
+    return render(request, 'defense/detail.html', context)
     #this is returning the players name and stats by year if you follow the url defense/player's_id
     #it is essentially an info page for the player
 
