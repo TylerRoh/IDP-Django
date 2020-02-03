@@ -1,6 +1,20 @@
 This page is for notes related to the project
 
 
+************Updates*************************************
+
+
+2/3/20
+
+-addition of fantasy points added in the player detail screen, as well as stacked bar charts
+showing the source of the points. Thus far it only works with default scoring will add custom in 
+the future.
+
+
+
+
+
+
 
 ************Future Features*************************************
 2/3/2020
@@ -14,9 +28,9 @@ amount each stat category contributes to overall points
 
 -side by side player comparisons
 
--trade calculator in the distant future
+-trade calculator (distant future)
 
--offensive players also distant future
+-offensive players (distant future)
 
 
 
@@ -44,7 +58,7 @@ team_id
 year
 stat categories
 
-maybe
+Maybe:
 Team_list:
 team_id
 player_id

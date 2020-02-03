@@ -23,3 +23,5 @@ class Customized_Tables(forms.Form):
     pass_def = forms.BooleanField(required=False)
     forced_fumble = forms.BooleanField(required=False)
     fumble_recovery = forms.BooleanField(required=False)
+    fantasy_points = forms.BooleanField(required=False)
+    fantasy_point_mode = forms.BooleanField(required=False)

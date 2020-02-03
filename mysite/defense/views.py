@@ -81,36 +81,59 @@ def player_indv(request, player_id):
         #if the submission is valit the stat_list will populate with the category of each checked box
         if form.is_valid():
             cd = form.cleaned_data
-            if cd.get('games'):
-                stat_list.append('g')
-            if cd.get('games_started'):
-                stat_list.append('gs')
-            if cd.get('solo_tackles'):
-                stat_list.append('solo')
-            if cd.get('asst_tackles'):
-                stat_list.append('assists')
-            if cd.get('tackle_for_loss'):
-                stat_list.append('tfl')
-            if cd.get('sacks'):
-                stat_list.append('sacks')
-            if cd.get('qb_hits'):
-                stat_list.append('qb_hits')
-            if cd.get('interceptions'):
-                stat_list.append('interceptions')
-            if cd.get('pass_def'):
-                stat_list.append('pass_def')
-            if cd.get('forced_fumble'):
-                stat_list.append('ffb')
-            if cd.get('fumble_recovery'):
-                stat_list.append('fr')
+            if cd.get('fantasy_point_mode'):
+                default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
+                df = df[['year','interceptions','int_td','ffb','fr','fb_td','sacks','solo','assists','sfty']]
+                df['solo'] = df['solo']*default_scoring['solo']
+                df['assists'] = df['assists']*default_scoring['ast']
+                df['sacks'] = df['sacks']*default_scoring['sacks']
+                df['interceptions'] = df['interceptions']*default_scoring['interceptions']
+                df['ffb'] = df['ffb']*default_scoring['ffb']
+                df['fr'] = df['fr']*default_scoring['fr']
+                df['td'] = (df['int_td']+df['fb_td'])*default_scoring['td']
+                df['sfty'] = df['sfty']*default_scoring['sfty']
 
-        #this plots all of the categories the user checked
-        for i in stat_list:
-            fig.add_trace(go.Scatter(x=df['year'],y=df[i],name=i))
+                point_categories = ['interceptions','int_td','ffb','fr','fb_td','sacks','solo','assists','sfty']
 
-            #this adds the axis settings we want
-        fig.update_layout(title="Player Stats", xaxis_title="Season", width=850, height=500,
-            xaxis = dict(tickmode = 'linear', dtick = 1), yaxis = dict(tickmode = 'linear', tick0 = 0, dtick = 10))
+                for i in point_categories:
+                    fig.add_trace(go.Bar(x=df['year'],y=df[i],name=i))
+
+                fig.update_layout(barmode='stack',title="Fantasy Point Chart", xaxis_title="Season", yaxis_title="Fantasy Points", width=850, height=500,
+                   xaxis = dict(tickmode = 'linear', dtick = 1), yaxis = dict(tickmode = 'linear', tick0 = 0, dtick = 10) )
+
+            else:
+                if cd.get('games'):
+                    stat_list.append('g')
+                if cd.get('games_started'):
+                    stat_list.append('gs')
+                if cd.get('solo_tackles'):
+                    stat_list.append('solo')
+                if cd.get('asst_tackles'):
+                    stat_list.append('assists')
+                if cd.get('tackle_for_loss'):
+                    stat_list.append('tfl')
+                if cd.get('sacks'):
+                    stat_list.append('sacks')
+                if cd.get('qb_hits'):
+                    stat_list.append('qb_hits')
+                if cd.get('interceptions'):
+                    stat_list.append('interceptions')
+                if cd.get('pass_def'):
+                    stat_list.append('pass_def')
+                if cd.get('forced_fumble'):
+                    stat_list.append('ffb')
+                if cd.get('fantasy_points'):
+                    default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
+                    df["fantasy_points"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']+df['fr']*default_scoring['fr']+df['sfty']*default_scoring['sfty']+(df['int_td']+df['fb_td'])*default_scoring['td']
+                    stat_list.append('fantasy_points')
+
+            #this plots all of the categories the user checked
+            for i in stat_list:
+                fig.add_trace(go.Scatter(x=df['year'],y=df[i],name=i))
+
+                #this adds the axis settings we want
+            fig.update_layout(title="Player Stats", xaxis_title="Season", width=850, height=500,
+                xaxis = dict(tickmode = 'linear', dtick = 1), yaxis = dict(tickmode = 'linear', tick0 = 0, dtick = 10))
 
         #this set the html, css, and javascript needed for our graph to the variable plot_div, this can be passed to the template
         plot_div = plot(fig, output_type='div')
