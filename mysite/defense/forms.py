@@ -6,6 +6,9 @@ class TestForm(forms.Form):
     sacks = forms.DecimalField(label='Sacks')
     interceptions = forms.DecimalField(label='Ints')
     ffb = forms.DecimalField(label='Force Fb')
+    fr = forms.DecimalField(label='Fumble Recovery')
+    td = forms.DecimalField(label='TD')
+    sfty = forms.DecimalField(label='Saftey')
 
 
 class Customized_Tables(forms.Form):

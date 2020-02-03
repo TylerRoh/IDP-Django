@@ -2,15 +2,21 @@ This page is for notes related to the project
 
 
 
+************Future Features*************************************
+2/3/2020
 
+-Interpretive search bar
 
+-fantatsy points in the player detail screen as well as bar charts that show the 
+amount each stat category contributes to overall points
 
+-a custom scoring option for the above
 
+-side by side player comparisons
 
+-trade calculator in the distant future
 
-
-
-
+-offensive players also distant future
 
 
 

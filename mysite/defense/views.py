@@ -20,15 +20,15 @@ def index(request):
         context = {'players': players, 'search_term': search_term,}
     else:
         #I am going to use this to get our fantasy points for each player, eventually I will make the ability to customize
-        default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3}
+        default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
         #this is pulling all of the team info database
         raw_stats = TeamInfo.objects.all()
         #this gets it so pandas can use it
         stats = raw_stats.values()
         #here we have our pandas dataframe
         df = pd.DataFrame.from_records(stats)
-        #this puts in our default scoring as a column in the dataframe right now it is just based on solo tackles
-        df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']
+        #this puts in our default scoring as a column in the dataframe it is calculated based on the above dictionary and a dataframe of our postgresql database
+        df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']+df['fr']*default_scoring['fr']+df['sfty']*default_scoring['sfty']+(df['int_td']+df['fb_td'])*default_scoring['td']
         #this sorts by fantasy point totals
         df = df.sort_values(['year','fp'], ascending=[False, False])
         #sort out the top 10
@@ -142,8 +142,8 @@ def test(request):
     #it works! it runs two querys and if a search term matches a first or a last name then it will return it.
     #the only way to run or on querys is to use the Q imported above and | inbetween querys
     search_term = ""
-    #I am going to use this to get our fantasy points for each player, eventually I will make the ability to customize
-    default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3}
+    #This is the default socring, the ability to update the custom scoring is below
+    default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
 
         #if this is a post request the data must be processed
     if request.method == 'POST':
@@ -157,6 +157,9 @@ def test(request):
             default_scoring['sacks'] = cd.get('sacks')
             default_scoring['interceptions'] = cd.get('interceptions')
             default_scoring['ffb'] = cd.get('ffb')
+            default_scoring['fr'] = cd.get('fr')
+            default_scoring['td'] = cd.get('td')
+            default_scoring['sfty'] = cd.get('sfty')
 
     #the else occurs only before the submit button is clicked, so essentially when the player page is first loaded
     #the graph will be populated with every data point, might decide to change it to blank for initial load later.
@@ -174,8 +177,8 @@ def test(request):
         stats = raw_stats.values()
         #here we have our pandas dataframe
         df = pd.DataFrame.from_records(stats)
-        #this puts in our default scoring as a column in the dataframe right now it is just based on solo tackles
-        df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']
+       #this puts in our default scoring as a column in the dataframe it is calculated based on the above dictionary and a dataframe of our postgresql database
+        df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']+df['fr']*default_scoring['fr']+df['sfty']*default_scoring['sfty']+(df['int_td']+df['fb_td'])*default_scoring['td']
         #this sorts by fantasy point totals
         df = df.sort_values(['year','fp'], ascending=[False, False])
         #sort out the top 10
