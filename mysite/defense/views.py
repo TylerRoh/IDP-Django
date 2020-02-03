@@ -81,9 +81,13 @@ def player_indv(request, player_id):
         #if the submission is valit the stat_list will populate with the category of each checked box
         if form.is_valid():
             cd = form.cleaned_data
+            #if the fantaxy_point mode is checked then it will ignore all the others and make a stacked bar chart
             if cd.get('fantasy_point_mode'):
+                #this adds the default scoring settings
                 default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
+                #this narrows the dataframe to only fields we need for the graph
                 df = df[['year','interceptions','int_td','ffb','fr','fb_td','sacks','solo','assists','sfty']]
+                #all the below updates the stats so they are expressed in fantasy points
                 df['solo'] = df['solo']*default_scoring['solo']
                 df['assists'] = df['assists']*default_scoring['ast']
                 df['sacks'] = df['sacks']*default_scoring['sacks']
@@ -92,15 +96,16 @@ def player_indv(request, player_id):
                 df['fr'] = df['fr']*default_scoring['fr']
                 df['td'] = (df['int_td']+df['fb_td'])*default_scoring['td']
                 df['sfty'] = df['sfty']*default_scoring['sfty']
-
+                #this gives us the fields we want plotted on the y axis
                 point_categories = ['interceptions','int_td','ffb','fr','fb_td','sacks','solo','assists','sfty']
 
+                #this adds the bars for each year
                 for i in point_categories:
                     fig.add_trace(go.Bar(x=df['year'],y=df[i],name=i))
-
+                #this is were the layout is determined
                 fig.update_layout(barmode='stack',title="Fantasy Point Chart", xaxis_title="Season", yaxis_title="Fantasy Points", width=850, height=500,
                    xaxis = dict(tickmode = 'linear', dtick = 1), yaxis = dict(tickmode = 'linear', tick0 = 0, dtick = 10) )
-
+            #if fantasy point mode isn't clicked then it will only plot the ones that are checked as a lined scatter plot
             else:
                 if cd.get('games'):
                     stat_list.append('g')
