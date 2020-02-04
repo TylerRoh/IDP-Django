@@ -4,11 +4,16 @@ This page is for notes related to the project
 ************Updates*************************************
 
 
+2/4/20
+-tried to add a more dynamic search using javascrip under the defense/ajax_demo directory.
+currently it is not working and i suspect it is an issue loading the javascript, but I am not sure.
+
 2/3/20
 
 -addition of fantasy points added in the player detail screen, as well as stacked bar charts
-showing the source of the points. Thus far it only works with default scoring will add custom in 
+showing the source of the points. Thus far it only works with default scoring will add custom in
 the future.
+
 
 
 
@@ -21,7 +26,7 @@ the future.
 
 -Interpretive search bar
 
--fantatsy points in the player detail screen as well as bar charts that show the 
+-fantatsy points in the player detail screen as well as bar charts that show the
 amount each stat category contributes to overall points
 
 -a custom scoring option for the above

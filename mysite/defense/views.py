@@ -1,6 +1,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.db.models import Q
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 import pandas as pd
 
 from plotly.offline import plot
@@ -234,3 +236,26 @@ def test(request):
     context['form'] = form
 
     return render(request, 'defense/test.html', context)
+
+
+def ajax_demo(request):
+    #Not currently working, I think it is a problem with the javascript, will update later
+    context = {}
+    #this captures the get parameter we are sending
+    url_parameter = request.GET.get("q")
+
+    if url_parameter:
+        players = Players.objects.filter(player_lname__icontains=url_parameter)
+    else:
+        players = Players.objects.all()
+
+    if request.is_ajax():
+        html = render_to_string(
+            template_name="ajax-results-partial.html",
+            context = {'players': players}
+            )
+        data_dict = {"html_from_view": html}
+
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, 'defense/ajax_demo.html', context)
