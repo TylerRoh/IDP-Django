@@ -5,6 +5,9 @@ This page is for notes related to the project
 
 2/6/20
 
+-The search bar will now search for one name (just the first or just the last name. ex:smith), or it can search a full name if
+first and last are provided. Spelling must be correct.
+
 -All of the site html's are now connected to one base. This means that our navigation bar and
 search will carry to all pages. The search bar also now redirects to our index html. This allows
 us to use the search bar in the player detail page.

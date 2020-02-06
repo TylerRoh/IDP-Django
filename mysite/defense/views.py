@@ -1,8 +1,5 @@
-from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.db.models import Q
-from django.template.loader import render_to_string
-from django.http import JsonResponse
 import pandas as pd
 
 from plotly.offline import plot
@@ -15,11 +12,32 @@ def index(request):
     #it works! it runs two querys and if a search term matches a first or a last name then it will return it.
     #the only way to run or on querys is to use the Q imported above and | inbetween querys
     search_term = ""
-
+    #if submit is clicked
     if 'search' in request.GET:
+        #this reads what is submitted
         search_term = request.GET['search']
-        players = Players.objects.filter(Q(player_lname__icontains=search_term) | Q(player_fname__icontains=search_term))
+
+        try:
+            #this splits the submitted info on the spaces
+            search_term = search_term.split()
+
+            if len(search_term) < 2:
+                #if it is only one word submitted it will be checked against databases for last and first name
+                players = Players.objects.filter(Q(player_lname__icontains=search_term[0]) | Q(player_fname__icontains=search_term[0]))
+
+            elif len(search_term) == 2:
+                #else if it is two words submitted it will be checked if both the first and last names are attached to a player
+                players = Players.objects.filter((Q(player_lname__icontains=search_term[0]) & Q(player_fname__icontains=search_term[1])) | (Q(player_lname__icontains=search_term[1]) & Q(player_fname__icontains=search_term[0])))
+            else:
+                #if more than 2 names are given it will return the below
+                players = 'No Players Found...'
+
+        except IndexError:
+            #this exception only triggers if someone submits none as a search and returns the below
+            players = 'No Players Found...'
+        #this updates the dictonary for the html
         context = {'players': players,}
+
     else:
         #I am going to use this to get our fantasy points for each player, eventually I will make the ability to customize
         default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
