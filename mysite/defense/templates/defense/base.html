@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+        <title>IDP</title>
+    </head>
+
+    <div class="topnav">
+        <ul>
+            <li><a href="/defense/">Home</a></li>
+            <li style="float:right">
+                <form class="search" type="get" action="/defense/" style="margin: 0">
+                    <input  id="search_box" type="text" name="search"  placeholder="Search..." >
+                    <button id="search_submit" type="submit" >Submit</button>
+                </form>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+                <script src="js/bootstrap.min.js"></script>
+            </li>
+        </ul>
+    <div>
+
+    <body>
+
+        {% block content %}
+        {% endblock %}
+
+    </body>
+</html>

@@ -19,7 +19,7 @@ def index(request):
     if 'search' in request.GET:
         search_term = request.GET['search']
         players = Players.objects.filter(Q(player_lname__icontains=search_term) | Q(player_fname__icontains=search_term))
-        context = {'players': players, 'search_term': search_term,}
+        context = {'players': players,}
     else:
         #I am going to use this to get our fantasy points for each player, eventually I will make the ability to customize
         default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
@@ -52,7 +52,7 @@ def index(request):
         #creating tuples to plug into the template
         tuples = [tuple(x) for x in final_df.to_numpy()]
         #the above is probably sloppy as hell but it works
-        context = {'search_term': search_term, 'tuples':tuples,}
+        context = {'tuples':tuples,}
 
     return render(request, 'defense/index.html', context)
 
@@ -147,8 +147,6 @@ def player_indv(request, player_id):
 
     else:
         form = Customized_Tables()
-        #this is the initial instance of our graph
-
 
         #this passes in all of the stats from the pandas dataframe we want to graph, the for loop below traces them
         stat_list = ['g','gs','interceptions','int_td','pass_def','ffb','fr','fb_td','sacks','solo','assists','tfl','qb_hits']
@@ -171,7 +169,6 @@ def player_indv(request, player_id):
 def test(request):
     #it works! it runs two querys and if a search term matches a first or a last name then it will return it.
     #the only way to run or on querys is to use the Q imported above and | inbetween querys
-    search_term = ""
     #This is the default socring, the ability to update the custom scoring is below
     default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
 
@@ -196,66 +193,39 @@ def test(request):
     else:
         form = TestForm()
 
-    if 'search' in request.GET:
-        search_term = request.GET['search']
-        players = Players.objects.filter(Q(player_lname__icontains=search_term) | Q(player_fname__icontains=search_term))
-        context = {'players': players, 'search_term': search_term,}
-    else:
-        #this is pulling all of the team info database
-        raw_stats = TeamInfo.objects.all()
-        #this gets it so pandas can use it
-        stats = raw_stats.values()
-        #here we have our pandas dataframe
-        df = pd.DataFrame.from_records(stats)
-       #this puts in our default scoring as a column in the dataframe it is calculated based on the above dictionary and a dataframe of our postgresql database
-        df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']+df['fr']*default_scoring['fr']+df['sfty']*default_scoring['sfty']+(df['int_td']+df['fb_td'])*default_scoring['td']
-        #this sorts by fantasy point totals
-        df = df.sort_values(['year','fp'], ascending=[False, False])
-        #sort out the top 10
-        df = df[0:10]
-        #list for the top ten scorers ids
-        ids = df['player_id_id'].values.tolist()
-        #gets the name information for the players
-        players = Players.objects.filter(pk__in=ids)
-        #now to get the fantasy point totals and the players id for a join
-        df = df[['fp', 'player_id_id']]
-        #getting the name values of the players
-        final_names = players.values()
-        #making a dataframe of the name info
-        final_df = pd.DataFrame.from_records(final_names)
-        #joins our table that is keeping track of points and the one with the players name info
-        final_df = pd.merge(final_df, df, left_on='player_id', right_on='player_id_id')
-        #sorts out the top 10 displayed
-        final_df = final_df.sort_values(['fp'], ascending=False)
-        #creating tuples to plug into the template
-        tuples = [tuple(x) for x in final_df.to_numpy()]
-        #the above is probably sloppy as hell but it works
-        context = {'search_term': search_term, 'tuples':tuples,}
+    #this is pulling all of the team info database
+    raw_stats = TeamInfo.objects.all()
+    #this gets it so pandas can use it
+    stats = raw_stats.values()
+    #here we have our pandas dataframe
+    df = pd.DataFrame.from_records(stats)
+    #this puts in our default scoring as a column in the dataframe it is calculated based on the above dictionary and a dataframe of our postgresql database
+    df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']+df['fr']*default_scoring['fr']+df['sfty']*default_scoring['sfty']+(df['int_td']+df['fb_td'])*default_scoring['td']
+    #this sorts by fantasy point totals
+    df = df.sort_values(['year','fp'], ascending=[False, False])
+    #sort out the top 10
+    df = df[0:10]
+    #list for the top ten scorers ids
+    ids = df['player_id_id'].values.tolist()
+    #gets the name information for the players
+    players = Players.objects.filter(pk__in=ids)
+    #now to get the fantasy point totals and the players id for a join
+    df = df[['fp', 'player_id_id']]
+    #getting the name values of the players
+    final_names = players.values()
+    #making a dataframe of the name info
+    final_df = pd.DataFrame.from_records(final_names)
+    #joins our table that is keeping track of points and the one with the players name info
+    final_df = pd.merge(final_df, df, left_on='player_id', right_on='player_id_id')
+    #sorts out the top 10 displayed
+    final_df = final_df.sort_values(['fp'], ascending=False)
+    #creating tuples to plug into the template
+    tuples = [tuple(x) for x in final_df.to_numpy()]
+    #the above is probably sloppy as hell but it works
+    context = {'tuples':tuples,}
 
     #this appends the context dictionary with the form object
     context['form'] = form
 
     return render(request, 'defense/test.html', context)
 
-
-def ajax_demo(request):
-    #Not currently working, I think it is a problem with the javascript, will update later
-    context = {}
-    #this captures the get parameter we are sending
-    url_parameter = request.GET.get("q")
-
-    if url_parameter:
-        players = Players.objects.filter(player_lname__icontains=url_parameter)
-    else:
-        players = Players.objects.all()
-
-    if request.is_ajax():
-        html = render_to_string(
-            template_name="ajax-results-partial.html",
-            context = {'players': players}
-            )
-        data_dict = {"html_from_view": html}
-
-        return JsonResponse(data=data_dict, safe=False)
-
-    return render(request, 'defense/ajax_demo.html', context)

@@ -1,22 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-    <title>Home</title>
-  </head>
-  <div class="topnav">
-      <a href="/defense/">Home</a>
-  </div>
-    <body>
-        <form class="search" type="get" action="." style="margin: 0">
-            <input  id="search_box" type="text" name="search"  placeholder="Search..." >
-            <button id="search_submit" type="submit" >Submit</button>
-        </form>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+{% extends 'defense/base.html' %}
 
+{% block content %}
         <div class="players">
           <table>
             {% for a in tuples %}
@@ -37,5 +21,4 @@
             <h3>Enter scoring settings?</h3>
             <a href="/defense/custom">click here</a>
         </div>
-    </body>
-</html>
+{% endblock %}

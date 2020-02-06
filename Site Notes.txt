@@ -3,8 +3,14 @@ This page is for notes related to the project
 
 ************Updates*************************************
 
+2/6/20
+
+-All of the site html's are now connected to one base. This means that our navigation bar and
+search will carry to all pages. The search bar also now redirects to our index html. This allows
+us to use the search bar in the player detail page.
 
 2/4/20
+
 -tried to add a more dynamic search using javascrip under the defense/ajax_demo directory.
 currently it is not working and i suspect it is an issue loading the javascript, but I am not sure.
 

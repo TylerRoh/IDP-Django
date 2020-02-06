@@ -1,17 +1,31 @@
-div.topnav{
-    overflow: hidden;
-    background-color: #333;
-    font-family: Arial;
+
+div.topnav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+div.topnav li {
+  float: left;
 }
 
-div.topnav a {
-    float: left;
-    font-size: 16px;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+div.topnav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
 }
+
+div.topnav li a:hover {
+  background-color: #111;
+}
+
+div.topnav form {
+    padding-top: 20px;
+}
+
 div.players {
     width: 300px;
     background-color: rgb(122, 118, 108);
@@ -26,16 +40,19 @@ div.table {
 }
 
 div.search{
+    width: 300px;
     background-color: rgb(122, 118, 108);
     padding: 20px;
     width: 150px;
 }
 
+div.search ul{
+  background-color: rgb(122, 118, 108);
+}
 
 form.search {
     float: right;
 }
-
 
 
 
