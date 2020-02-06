@@ -33,7 +33,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     #my apps
     'defense.apps.DefenseConfig',
-    'polls.apps.PollsConfig',
 
     #base
     'django.contrib.admin',

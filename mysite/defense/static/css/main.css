@@ -26,46 +26,89 @@ div.topnav form {
     padding-top: 20px;
 }
 
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #333;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: black;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
 div.players {
     width: 300px;
-    background-color: rgb(122, 118, 108);
     padding: 20px;
     width: 150px;
 }
 
-div.table {
-    width: 1000px;
-    background-color: rgb(122, 118, 108);
-    padding: 20px;
+body {
+  background-color: #6e6060;
 }
 
 div.search{
     width: 300px;
-    background-color: rgb(122, 118, 108);
     padding: 20px;
     width: 150px;
-}
-
-div.search ul{
-  background-color: rgb(122, 118, 108);
 }
 
 form.search {
     float: right;
 }
-
-
+h1 {
+    color: #c4822b;
+}
 
 table {
-    border-collapse: collapse;
-}
-table, th, td {
-  border: 2px solid black;
+  border-collapse: collapse;
+  border: 1px solid black;
+  width: 200%;
 }
 
-h1 {
-    color: red;
+th {
+  background-color: #c4822b;
+  height: 40px;
+  text-align: left;
 }
-td.top_10 {
-    boarder: none;
+tr {
+  border: 1px solid black;
+  height: 40px;
+}
+tr.data:hover {background-color: #f5f5f5;}
+
+table.dataframe {
+  width: 100%;
 }

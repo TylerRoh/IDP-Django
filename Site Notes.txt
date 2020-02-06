@@ -12,6 +12,8 @@ first and last are provided. Spelling must be correct.
 search will carry to all pages. The search bar also now redirects to our index html. This allows
 us to use the search bar in the player detail page.
 
+-Abanndoned the dynamic search for now. Will be added eventually.
+
 2/4/20
 
 -tried to add a more dynamic search using javascrip under the defense/ajax_demo directory.
@@ -22,11 +24,6 @@ currently it is not working and i suspect it is an issue loading the javascript,
 -addition of fantasy points added in the player detail screen, as well as stacked bar charts
 showing the source of the points. Thus far it only works with default scoring will add custom in
 the future.
-
-
-
-
-
 
 
 

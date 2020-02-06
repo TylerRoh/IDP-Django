@@ -1,10 +1,16 @@
 {% extends 'defense/base.html' %}
 
 {% block content %}
+        <h1>{{ header }}</h1>
         <div class="players">
           <table>
+            <tr>
+              {% for i in table_headers %}
+                <th>{{ i }}</th>
+              {% endfor %}
+            </tr>
             {% for a in tuples %}
-              <tr>
+              <tr class="data">
                 <td class="top_10"><a href="/defense/player/{{ a.0 }}/">{{ a.1 }}, {{ a.2 }}</a></td>
                 <td>{{ a.3 }}</td>
               </tr>
@@ -12,9 +18,11 @@
           </table>
         </div>
         <div class="search">
+          <ul>
           {% for player in players %}
-            <ul><a href="/defense/player/{{ player.player_id }}">{{ player.player_lname }}, {{ player.player_fname }}</a></ul>
+            <li><a href="/defense/player/{{ player.player_id }}">{{ player.player_lname }}, {{ player.player_fname }}</a></li>
           {% endfor %}
+          </ul>
         </div>
 
         <div>

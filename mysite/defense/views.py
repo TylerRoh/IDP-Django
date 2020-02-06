@@ -36,7 +36,8 @@ def index(request):
             #this exception only triggers if someone submits none as a search and returns the below
             players = 'No Players Found...'
         #this updates the dictonary for the html
-        context = {'players': players,}
+        header = 'Search Results'
+        context = {'players': players, 'header': header,}
 
     else:
         #I am going to use this to get our fantasy points for each player, eventually I will make the ability to customize
@@ -69,8 +70,11 @@ def index(request):
         final_df = final_df.sort_values(['fp'], ascending=False)
         #creating tuples to plug into the template
         tuples = [tuple(x) for x in final_df.to_numpy()]
-        #the above is probably sloppy as hell but it works
-        context = {'tuples':tuples,}
+        #the above is probably sloppy as hell but it works try and improve efficiency later
+        header = 'Top 10 Standard Scoring'
+        table_headers = ['Name', 'Fantasy Points']
+
+        context = {'tuples':tuples, 'header':header, 'table_headers':table_headers}
 
     return render(request, 'defense/index.html', context)
 
@@ -205,11 +209,13 @@ def test(request):
             default_scoring['fr'] = cd.get('fr')
             default_scoring['td'] = cd.get('td')
             default_scoring['sfty'] = cd.get('sfty')
+            header = 'Top 10 Custom Scoring'
 
     #the else occurs only before the submit button is clicked, so essentially when the player page is first loaded
     #the graph will be populated with every data point, might decide to change it to blank for initial load later.
     else:
         form = TestForm()
+        header = 'Top 10 Standard Scoring'
 
     #this is pulling all of the team info database
     raw_stats = TeamInfo.objects.all()
@@ -240,7 +246,9 @@ def test(request):
     #creating tuples to plug into the template
     tuples = [tuple(x) for x in final_df.to_numpy()]
     #the above is probably sloppy as hell but it works
-    context = {'tuples':tuples,}
+    #this is for our table headers
+    table_headers = ['Name', 'Fantasy Points']
+    context = {'tuples':tuples, 'header':header, 'table_headers':table_headers}
 
     #this appends the context dictionary with the form object
     context['form'] = form
