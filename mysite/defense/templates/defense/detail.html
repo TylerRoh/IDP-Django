@@ -5,7 +5,7 @@
     <div class="table">
         {{ table|safe }}
         <div>
-            <form action="" method="post">
+            <form class="graph" action="" method="post">
                 {% csrf_token %}
                 {{ form }}
                 <input type="submit" value="Submit">

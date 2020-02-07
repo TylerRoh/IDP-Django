@@ -4,7 +4,7 @@ div.topnav ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
+  background-color: #4a2c2c;
 }
 div.topnav li {
   float: left;
@@ -76,7 +76,7 @@ div.players {
 }
 
 body {
-  background-color: #6e6060;
+  background-color: #ffdc76;
 }
 
 div.search{
@@ -89,7 +89,7 @@ form.search {
     float: right;
 }
 h1 {
-    color: #c4822b;
+    color: #d3504a;
 }
 
 table {
@@ -99,7 +99,7 @@ table {
 }
 
 th {
-  background-color: #c4822b;
+  background-color: #fefea4;
   height: 40px;
   text-align: left;
 }
@@ -110,5 +110,7 @@ tr {
 tr.data:hover {background-color: #f5f5f5;}
 
 table.dataframe {
-  width: 100%;
+  width: 80%;
 }
+
+

@@ -2,6 +2,9 @@ This page is for notes related to the project
 
 
 ************Updates*************************************
+2/7/20
+
+-Added view that will show individual position groups (dl,lb,cb). Added a bit of css style as well.
 
 2/6/20
 

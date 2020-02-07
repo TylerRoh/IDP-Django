@@ -78,6 +78,123 @@ def index(request):
 
     return render(request, 'defense/index.html', context)
 
+def test(request):
+    #it works! it runs two querys and if a search term matches a first or a last name then it will return it.
+    #the only way to run or on querys is to use the Q imported above and | inbetween querys
+    #This is the default socring, the ability to update the custom scoring is below
+    default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
+
+        #if this is a post request the data must be processed
+    if request.method == 'POST':
+        #this will create instance of our form class and populate it with the data from the user input
+        form = TestForm(request.POST)
+        #check if it is a valid entry, if it is then it will update the default scoring dict with custom values
+        if form.is_valid():
+            cd = form.cleaned_data
+            default_scoring['solo'] = cd.get('solo_tackles')
+            default_scoring['ast'] = cd.get('ast_tackles')
+            default_scoring['sacks'] = cd.get('sacks')
+            default_scoring['interceptions'] = cd.get('interceptions')
+            default_scoring['ffb'] = cd.get('ffb')
+            default_scoring['fr'] = cd.get('fr')
+            default_scoring['td'] = cd.get('td')
+            default_scoring['sfty'] = cd.get('sfty')
+            header = 'Top 10 Custom Scoring'
+
+    #the else occurs only before the submit button is clicked, so essentially when the player page is first loaded
+    #the graph will be populated with every data point, might decide to change it to blank for initial load later.
+    else:
+        form = TestForm()
+        header = 'Top 10 Standard Scoring'
+
+    #this is pulling all of the team info database
+    raw_stats = TeamInfo.objects.all()
+    #this gets it so pandas can use it
+    stats = raw_stats.values()
+    #here we have our pandas dataframe
+    df = pd.DataFrame.from_records(stats)
+    #this puts in our default scoring as a column in the dataframe it is calculated based on the above dictionary and a dataframe of our postgresql database
+    df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']+df['fr']*default_scoring['fr']+df['sfty']*default_scoring['sfty']+(df['int_td']+df['fb_td'])*default_scoring['td']
+    #this sorts by fantasy point totals
+    df = df.sort_values(['year','fp'], ascending=[False, False])
+    #sort out the top 10
+    df = df[0:10]
+    #list for the top ten scorers ids
+    ids = df['player_id_id'].values.tolist()
+    #gets the name information for the players
+    players = Players.objects.filter(pk__in=ids)
+    #now to get the fantasy point totals and the players id for a join
+    df = df[['fp', 'player_id_id']]
+    #getting the name values of the players
+    final_names = players.values()
+    #making a dataframe of the name info
+    final_df = pd.DataFrame.from_records(final_names)
+    #joins our table that is keeping track of points and the one with the players name info
+    final_df = pd.merge(final_df, df, left_on='player_id', right_on='player_id_id')
+    #sorts out the top 10 displayed
+    final_df = final_df.sort_values(['fp'], ascending=False)
+    #creating tuples to plug into the template
+    tuples = [tuple(x) for x in final_df.to_numpy()]
+    #the above is probably sloppy as hell but it works
+    #this is for our table headers
+    table_headers = ['Name', 'Fantasy Points']
+    context = {'tuples':tuples, 'header':header, 'table_headers':table_headers}
+
+    #this appends the context dictionary with the form object
+    context['form'] = form
+
+    return render(request, 'defense/test.html', context)
+
+def position_group(request, position):
+    #the url will pass in either dl,lb or db. this view will narrow down the positions based on which one it gets
+    #and provide a custom header.
+    if position == 'dl':
+        positions = ['DE','DE/LB','DE/DT','DL','DL/LB','DT','DT/LB']
+        header = 'Top 10 Defensive Linemen'
+    elif position == 'lb':
+        positions = ['DE/LB','DL/LB','DT/LB','LB']
+        header = 'Top 10 Linebackers'
+    else:
+        positions = ['CB','CB/S','DB','S']
+        header = 'Top 10 Secondary'
+    default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
+    #this is pulling all of the team info database
+    raw_stats = TeamInfo.objects.all()
+    #this gets it so pandas can use it
+    stats = raw_stats.values()
+    #here we have our pandas dataframe
+    df = pd.DataFrame.from_records(stats)
+    #gonna narrow this down to just 2019
+    df = df[df['year'] == 2019]
+    df = df[df['position'].isin(positions)]
+    #this puts in our default scoring as a column in the dataframe it is calculated based on the above dictionary and a dataframe of our postgresql database
+    df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']+df['fr']*default_scoring['fr']+df['sfty']*default_scoring['sfty']+(df['int_td']+df['fb_td'])*default_scoring['td']
+    #this sorts by fantasy point totals
+    df = df.sort_values(['year','fp'], ascending=[False, False])
+    #sort out the top 10
+    df = df[0:10]
+    #list for the top ten scorers ids
+    ids = df['player_id_id'].values.tolist()
+    #gets the name information for the players
+    players = Players.objects.filter(pk__in=ids)
+    #now to get the fantasy point totals and the players id for a join
+    df = df[['fp', 'player_id_id']]
+    #getting the name values of the players
+    final_names = players.values()
+    #making a dataframe of the name info
+    final_df = pd.DataFrame.from_records(final_names)
+    #joins our table that is keeping track of points and the one with the players name info
+    final_df = pd.merge(final_df, df, left_on='player_id', right_on='player_id_id')
+    #sorts out the top 10 displayed
+    final_df = final_df.sort_values(['fp'], ascending=False)
+    #creating tuples to plug into the template
+    tuples = [tuple(x) for x in final_df.to_numpy()]
+    #this is for our table headers
+    table_headers = ['Name', 'Fantasy Points']
+    context = {'tuples':tuples, 'header':header, 'table_headers':table_headers}
+
+
+    return render(request, 'defense/index.html', context)
 
 def player_indv(request, player_id):
     player_info = get_object_or_404(Players, pk=player_id)
@@ -170,11 +287,6 @@ def player_indv(request, player_id):
     else:
         form = Customized_Tables()
 
-        #this passes in all of the stats from the pandas dataframe we want to graph, the for loop below traces them
-        stat_list = ['g','gs','interceptions','int_td','pass_def','ffb','fr','fb_td','sacks','solo','assists','tfl','qb_hits']
-        for i in stat_list:
-            fig.add_trace(go.Scatter(x=df['year'],y=df[i],name=i))
-
             #this adds the axis settings we want
         fig.update_layout(title="Player Stats", xaxis_title="Season", width=850, height=500,
             xaxis = dict(tickmode = 'linear', dtick = 1), yaxis = dict(tickmode = 'linear', tick0 = 0, dtick = 10))
@@ -188,70 +300,5 @@ def player_indv(request, player_id):
     #this is returning the players name and stats by year if you follow the url defense/player's_id
     #it is essentially an info page for the player
 
-def test(request):
-    #it works! it runs two querys and if a search term matches a first or a last name then it will return it.
-    #the only way to run or on querys is to use the Q imported above and | inbetween querys
-    #This is the default socring, the ability to update the custom scoring is below
-    default_scoring = {'solo':1,'ast':0.5,'sacks':3,'interceptions':3,'ffb':3, 'fr':1, 'td':6, 'sfty':2,}
 
-        #if this is a post request the data must be processed
-    if request.method == 'POST':
-        #this will create instance of our form class and populate it with the data from the user input
-        form = TestForm(request.POST)
-        #check if it is a valid entry, if it is then it will update the default scoring dict with custom values
-        if form.is_valid():
-            cd = form.cleaned_data
-            default_scoring['solo'] = cd.get('solo_tackles')
-            default_scoring['ast'] = cd.get('ast_tackles')
-            default_scoring['sacks'] = cd.get('sacks')
-            default_scoring['interceptions'] = cd.get('interceptions')
-            default_scoring['ffb'] = cd.get('ffb')
-            default_scoring['fr'] = cd.get('fr')
-            default_scoring['td'] = cd.get('td')
-            default_scoring['sfty'] = cd.get('sfty')
-            header = 'Top 10 Custom Scoring'
-
-    #the else occurs only before the submit button is clicked, so essentially when the player page is first loaded
-    #the graph will be populated with every data point, might decide to change it to blank for initial load later.
-    else:
-        form = TestForm()
-        header = 'Top 10 Standard Scoring'
-
-    #this is pulling all of the team info database
-    raw_stats = TeamInfo.objects.all()
-    #this gets it so pandas can use it
-    stats = raw_stats.values()
-    #here we have our pandas dataframe
-    df = pd.DataFrame.from_records(stats)
-    #this puts in our default scoring as a column in the dataframe it is calculated based on the above dictionary and a dataframe of our postgresql database
-    df["fp"] = df['solo']*default_scoring['solo']+df['assists']*default_scoring['ast']+df['sacks']*default_scoring['sacks']+df['interceptions']*default_scoring['interceptions']+df['ffb']*default_scoring['ffb']+df['fr']*default_scoring['fr']+df['sfty']*default_scoring['sfty']+(df['int_td']+df['fb_td'])*default_scoring['td']
-    #this sorts by fantasy point totals
-    df = df.sort_values(['year','fp'], ascending=[False, False])
-    #sort out the top 10
-    df = df[0:10]
-    #list for the top ten scorers ids
-    ids = df['player_id_id'].values.tolist()
-    #gets the name information for the players
-    players = Players.objects.filter(pk__in=ids)
-    #now to get the fantasy point totals and the players id for a join
-    df = df[['fp', 'player_id_id']]
-    #getting the name values of the players
-    final_names = players.values()
-    #making a dataframe of the name info
-    final_df = pd.DataFrame.from_records(final_names)
-    #joins our table that is keeping track of points and the one with the players name info
-    final_df = pd.merge(final_df, df, left_on='player_id', right_on='player_id_id')
-    #sorts out the top 10 displayed
-    final_df = final_df.sort_values(['fp'], ascending=False)
-    #creating tuples to plug into the template
-    tuples = [tuple(x) for x in final_df.to_numpy()]
-    #the above is probably sloppy as hell but it works
-    #this is for our table headers
-    table_headers = ['Name', 'Fantasy Points']
-    context = {'tuples':tuples, 'header':header, 'table_headers':table_headers}
-
-    #this appends the context dictionary with the form object
-    context['form'] = form
-
-    return render(request, 'defense/test.html', context)
 
