@@ -2,8 +2,10 @@
 
 {% block content %}
     <h1>{{ player_info }}</h1>
-    <div class="table">
-        {{ table|safe }}
+    <div>
+        <div class="detail">
+            {{ table|safe }}
+        </div>
         <div>
             <form class="graph" action="" method="post">
                 {% csrf_token %}

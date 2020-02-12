@@ -178,7 +178,7 @@ def position_group(request, position):
     #gets the name information for the players
     players = Players.objects.filter(pk__in=ids)
     #now to get the fantasy point totals and the players id for a join
-    df = df[['fp', 'player_id_id']]
+    df = df[['fp', 'solo', 'assists', 'interceptions', 'ffb', 'sacks', 'player_id_id']]
     #getting the name values of the players
     final_names = players.values()
     #making a dataframe of the name info
@@ -190,11 +190,11 @@ def position_group(request, position):
     #creating tuples to plug into the template
     tuples = [tuple(x) for x in final_df.to_numpy()]
     #this is for our table headers
-    table_headers = ['Name', 'Fantasy Points']
+    table_headers = ['Name', 'Fantasy Points', 'Solo Tackles', 'Assisted Tackles', 'Interceptions', 'FFB', 'Sacks']
     context = {'tuples':tuples, 'header':header, 'table_headers':table_headers}
 
 
-    return render(request, 'defense/index.html', context)
+    return render(request, 'defense/position.html', context)
 
 def player_indv(request, player_id):
     player_info = get_object_or_404(Players, pk=player_id)

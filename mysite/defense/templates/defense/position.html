@@ -2,7 +2,7 @@
 
 {% block content %}
         <h1>{{ header }}</h1>
-        <div class="index">
+        <div class="position">
           <table>
             <tr>
               {% for i in table_headers %}
@@ -13,6 +13,11 @@
               <tr class="data">
                 <td class="top_10"><a href="/defense/player/{{ a.0 }}/">{{ a.1 }}, {{ a.2 }}</a></td>
                 <td>{{ a.3 }}</td>
+                <td>{{ a.4 }}</td>
+                <td>{{ a.5 }}</td>
+                <td>{{ a.6 }}</td>
+                <td>{{ a.7 }}</td>
+                <td>{{ a.8 }}</td>
               </tr>
             {% endfor %}
           </table>
