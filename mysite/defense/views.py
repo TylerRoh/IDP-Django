@@ -190,7 +190,7 @@ def position_group(request, position):
     #creating tuples to plug into the template
     tuples = [tuple(x) for x in final_df.to_numpy()]
     #this is for our table headers
-    table_headers = ['Name', 'Fantasy Points', 'Solo Tackles', 'Assisted Tackles', 'Interceptions', 'FFB', 'Sacks']
+    table_headers = ['Name', 'Fantasy Points', 'Solo Tackles', 'Assisted Tackles', 'Interceptions', 'Forced Fumble', 'Sacks']
     context = {'tuples':tuples, 'header':header, 'table_headers':table_headers}
 
 
@@ -210,7 +210,7 @@ def player_indv(request, player_id):
 
     #this creates a dataframe that will show in the players details screen.
     df_table = df[['year','team','age','position','g','gs','interceptions','int_td','pass_def','ffb','fr','fb_td','sacks','solo','assists','tfl','qb_hits','sfty']]
-    table = df_table.sort_values(['year'], ascending=[False]).to_html()
+    table = df_table.sort_values(['year'], ascending=[False]).to_html(index=False)
 
     fig = go.Figure()
     #if this is a post request the data must be processed

@@ -1,5 +1,7 @@
 from django import forms
 
+
+#this is our form for the custom scoring entry on the main page
 class TestForm(forms.Form):
     solo_tackles = forms.DecimalField(label='Solo Tackles')
     ast_tackles = forms.DecimalField(label='Assist Tackles')
@@ -10,7 +12,7 @@ class TestForm(forms.Form):
     td = forms.DecimalField(label='TD')
     sfty = forms.DecimalField(label='Saftey')
 
-
+#this is our form for the graph on the player detail page
 class Customized_Tables(forms.Form):
     games = forms.BooleanField(required=False)
     games_started = forms.BooleanField(required=False)

@@ -1,4 +1,4 @@
-
+/* THIS IS FOR THE TOP NAVAGATION BAR */
 div.topnav ul {
   list-style-type: none;
   margin: 0;
@@ -69,37 +69,75 @@ div.topnav form {
   display: block;
 }
 
+form.search {
+    float: right;
+}
+/* END OF NAV BAR */
 
+
+/*BODY BACKROUND COLOR*/
 body {
   background-color: #ffdc76;
 }
 
-div.search{
-    width: 300px;
-    padding: 20px;
-    width: 150px;
-}
 
-form.search {
-    float: right;
+/* THIS IS FOR THE LIST THAT DISPLAYS FOR A SEARCH */
+div.search{
+  width: 150px;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
 }
+.search ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #4a2c2c;
+}
+.search li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+.search li a:hover {
+  background-color: #111;
+}
+/* END OF SEARCH LIST */
+
+
+
 
 div.players {
     width: 300px;
     padding: 20px;
     width: 150px;
 }
-
+/*ALL PAGE HEADERS*/
 h1 {
     color: #d3504a;
 }
 
+/*CUSTOM SCORING FORM*/
+.custom_scoring input, label {
+  display: block;
+}
 
 
+/* For the custom graph form*/
+.graph_form td {
+  padding: 10px;
+}
 
-
+.graph_form td:hover {background-color: #fefea4;}
 
 /*below is where we will add the css for all of the tables*/
+
+/*MAIN PAGE TABLES*/
 .index table {
     border-collapse: collapse;
     border: 4px solid black;
@@ -117,9 +155,9 @@ h1 {
     height: 40px;
 }
 
-tr:hover {background-color: #fefea4;}
+.index tr:hover {background-color: #fefea4;}
 
-
+/*POSITION GROUPS TABLES*/
 .position table{
     border-collapse: collapse;
     border: 4px solid black;
@@ -139,7 +177,9 @@ tr:hover {background-color: #fefea4;}
     text-align: center;
 }
 
+.position tr:hover {background-color: #fefea4;}
 
+/*INDV PLAYER TABLES*/
 .detail table{
     border-collapse: collapse;
     border: 4px solid black;
@@ -154,3 +194,6 @@ tr:hover {background-color: #fefea4;}
     text-align: center;
     border: 3px solid black;
 }
+
+.detail tr:hover {background-color: #fefea4;}
+/*END OF TABLES */

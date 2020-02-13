@@ -20,10 +20,43 @@
 
         <div>
             <h3>Enter scoring settings below:</h3>
-            <form action="/defense/custom/" method="post">
-                {% csrf_token %}
-                {{ form }}
-                <input type="submit" value="Submit">
+            <form action="/defense/custom/" method="post" class="custom_scoring">
+              {% csrf_token %}
+              <div class="custom_scoring">
+                <label for="solo_tackles">Solo</label>
+                {{ form.solo_tackles }}
+              </div>
+              <div class="custom_scoring">
+                <label for="ast_tackles">Assisted</label>
+                {{ form.ast_tackles }}
+              </div>
+              <div class="custom_scoring">
+                <label for="sacks">Sacks</label>
+                {{ form.sacks }}
+              </div>
+              <div class="custom_scoring">
+                <label for="interceptions">Interceptions</label>
+                {{ form.interceptions }}
+              </div>
+              <div class="custom_scoring">
+                <label for="ffb">Forced FB</label>
+                {{ form.ffb }}
+              </div>
+              <div class="custom_scoring">
+                <label for="fr">FB Rec</label>
+                {{ form.fr }}
+              </div>
+              <div class="custom_scoring">
+                <label for="td">TD</label>
+                {{ form.td }}
+              </div>
+              <div class="custom_scoring">
+                <label for="sfty">Safety</label>
+                {{ form.sfty }}
+              </div>
+
+              <input type="submit" value="Submit">
+
             </form>
         </div>
 {% endblock %}

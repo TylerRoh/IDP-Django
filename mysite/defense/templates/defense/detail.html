@@ -9,7 +9,67 @@
         <div>
             <form class="graph" action="" method="post">
                 {% csrf_token %}
-                {{ form }}
+                <div class="graph_form">
+                    <table>
+                        <tr>
+                            <td>
+                                <label for="games">Games</label>
+                                {{  form.games  }}
+                            </td>
+                            <td>
+                                <label for="games_started">Games Started</label>
+                                {{  form.games_started  }}
+                            </td>
+                            <td>
+                                <label for="solo_tackles">Solo Tackles</label>
+                                {{  form.solo_tackles  }}
+                            </td>
+                            <td>
+                                <label for="asst_tackles">Assisted Tackles</label>
+                                {{  form.asst_tackles  }}
+                            </td>
+                            <td>
+                                <label for="tackle_for_loss">TFL</label>
+                                {{  form.tackle_for_loss  }}
+                            </td>
+                            <td>
+                                <label for="sacks">Sacks</label>
+                                {{  form.sacks  }}
+                            </td>
+                            <td>
+                                <label for="qb_hits">QB Hits</label>
+                                {{  form.qb_hits  }}
+                            </td>
+                            <td>
+                                <label for="interceptions">Interceptions</label>
+                                {{  form.interceptions  }}
+                            </td>
+                            <td>
+                                <label for="pass_def">Pass Def</label>
+                                {{  form.pass_def  }}
+                            </td>
+                            <td>
+                                <label for="forced_fumble">Forced Fumble</label>
+                                {{  form.forced_fumble  }}
+                            </td>
+                            <td>
+                                <label for="fumble_recovery">Fumble Rec</label>
+                                {{  form.fumble_recovery  }}
+                            </td>
+                            <td>
+                                <label for="fantasy_points">Fantasy Points</label>
+                                {{  form.fantasy_points  }}
+                            </td>
+                            <td>
+                                <label for="fantasy_point_mode">FP Mode</label>
+                                {{  form.fantasy_point_mode  }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+
+                </div>
                 <input type="submit" value="Submit">
             </form>
         </div>
